@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 )
 
@@ -56,10 +57,22 @@ func identify(ctx *gin.Context) {
 		return
 	}
 
+	deviceId := uuid.NewString()
+	atClaims := jwt.MapClaims{}
+	atClaims["deviceId"] = deviceId
+	jwt := createJwt(&atClaims)
+
 	ctx.JSON(200, gin.H{
 		"data": gin.H{
-			"deviceId": uuid.NewString(),
+			"deviceId": deviceId,
 			"username": request.Username,
+			"token":    jwt,
 		},
 	})
+}
+
+func createJwt(claims *jwt.MapClaims) string {
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token, _ := at.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	return token
 }
