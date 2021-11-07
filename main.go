@@ -45,12 +45,12 @@ func setupApi() {
 	api.POST("/identify", identify)
 }
 
-type identifyRequest struct {
-	username string `json:username`
+type IdentifyRequest struct {
+	Username string `json:"username" binding:"required"`
 }
 
 func identify(ctx *gin.Context) {
-	var request identifyRequest
+	var request IdentifyRequest
 	if ctx.BindJSON(&request) != nil {
 		error(ctx, "Invalid request body")
 		return
@@ -59,7 +59,7 @@ func identify(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{
 		"data": gin.H{
 			"deviceId": uuid.NewString(),
-			"username": request.username,
+			"username": request.Username,
 		},
 	})
 }
