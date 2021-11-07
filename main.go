@@ -46,12 +46,12 @@ func setupApi() {
 	api.POST("/identify", identify)
 }
 
-type IdentifyRequest struct {
+type identifyRequest struct {
 	Username string `json:"username" binding:"required"`
 }
 
 func identify(ctx *gin.Context) {
-	var request IdentifyRequest
+	var request identifyRequest
 	if ctx.BindJSON(&request) != nil {
 		error(ctx, "Invalid request body")
 		return
